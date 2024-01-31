@@ -11,11 +11,24 @@ def main():
 
 
 def gui_operations():
-    st.header("Image Converter!")
+    st.header(":orange[Image Converter!]")
     st.divider()
-    img = st.file_uploader("Upload an image", type=['png', 'jpg'], help="Please upload a png or jpg")
-    if img is not None:
-        st.image(white_to_transparent(thresh_img(cv.cvtColor(img, cv.COLOR_BGR2GRAY))))
+    file = st.file_uploader("Upload an image", type=['png', 'jpg'], help="Please upload a png or jpg")
+    st.divider()
+    color = st.selectbox('Please select a pen color:', ('red', 'black', 'blue'))
+    st.divider()
+    if file is not None:
+        img = cv.imdecode(np.asarray(bytearray(file.getvalue()), dtype=np.uint8), cv.COLOR_RGB2GRAY)
+        ret, img = thresh_img(img)
+        img2 = white_to_transparent(img)
+        if color != 'black':
+            if color == 'red':
+                img2[:, :, 0] = 255
+            else:
+                img2[:, :, 2] = 255
+
+        st.image(img2)
+
 
 def local_operations():
     # Part 1
